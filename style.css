@@ -32,9 +32,18 @@ h1 {
   border-radius: 10px;
   font-size: 18px;
   font-weight: bold;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 10px #000; /* leve sombra */
 }
 
+
 .boton:hover {
-  background-color: #e6c200;
+  background-color: #ffdf00;
+  box-shadow: 0 0 15px #FFD700;
+}
+
+.boton:active {
+  background-color: #fff27b; /* más brillante */
+  box-shadow: 0 0 25px #FFD700;
+  transform: scale(0.98);
 }
