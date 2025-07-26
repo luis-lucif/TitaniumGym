@@ -82,12 +82,12 @@ h1 {
   background-color: #FFD700; /* dorado */
   color: black;
   text-decoration: none;
-  padding: 15px 25px;
+  padding: 20px 35px;
   margin: 20px auto;
   width: 80%;
-  max-width: 300px;
+  max-width: 350px;
   border-radius: 10px;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: bold;
   transition: all 0.2s ease;
   box-shadow: 0 0 10px #000; /* leve sombra */
@@ -118,8 +118,8 @@ h1 {
   
   .boton {
     width: 90%;
-    font-size: 16px;
-    padding: 12px 20px;
+    font-size: 18px;
+    padding: 16px 25px;
   }
   
   h1 {
