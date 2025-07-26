@@ -4,91 +4,28 @@
   <meta charset="UTF-8">
   <title>Rutinas de Gimnasio</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 </head>
 <body>
 
-  <!-- QR Scanner Section -->
-  <div id="qr-scanner-section">
-    <h1>Escanea el código QR</h1>
-    <div id="qr-reader">
-      <video id="video" autoplay muted playsinline></video>
-      <canvas id="canvas" hidden></canvas>
-    </div>
-    <p id="qr-status">Apunta la cámara hacia el código QR</p>
-    <button class="boton" onclick="simulateQRScan()" style="margin-top: 20px;">Simular escaneo QR (para prueba)</button>
-  </div> 
-
-  <!-- Gender Selection Section (initially hidden) -->
-  <div id="gender-selection" style="display: none;">
-    <h1>Elegí tu rutina</h1>
-    <a class="boton" id="rutinas-mujer">Rutinas Mujer</a>
-    <a class="boton" id="rutina-hombre">Rutina Hombre</a>
+  <div id="gender-selection">
+    <!-- Este contenido se reemplaza desde JS -->
   </div>
 
   <script>
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext('2d');
-    const qrStatus = document.getElementById('qr-status');
-    const qrScannerSection = document.getElementById('qr-scanner-section');
     const genderSelection = document.getElementById('gender-selection');
 
-    Startcamera
-    async function startCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: 'environment' } 
-        });
-        video.srcObject = stream;
-        video.play();
-        requestAnimationFrame(tick);
-      } catch (err) {
-        qrStatus.textContent = 'Error al acceder a la cámara: ' + err.message;
-      }
+    // Funciones para mostrar cada sección
+    function showInitialOptions() {
+      genderSelection.innerHTML = `
+        <h1>Elegí tu rutina</h1>
+        <a class="boton" id="rutinas-mujer">Rutinas Mujer</a>
+        <a class="boton" id="rutina-hombre">Rutina Hombre</a>
+      `;
+
+      // Volvemos a asignar los eventos cada vez que recreamos los botones
+      document.getElementById('rutinas-mujer').addEventListener('click', showWomenRoutines);
+      document.getElementById('rutina-hombre').addEventListener('click', showMenRoutines);
     }
-
-    function tick() {
-      if (video.readyState === video.HAVE_ENOUGH_DATA) {
-        canvas.height = video.videoHeight;
-        canvas.width = video.videoWidth;
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        const code = jsQR(imageData.data, imageData.width, imageData.height, {
-          inversionAttempts: "dontInvert",
-        });
-
-        if (code) {
-          qrStatus.textContent = 'QR escaneado exitosamente!';
-          // Stop camera
-          const stream = video.srcObject;
-          const tracks = stream.getTracks();
-          tracks.forEach(track => track.stop()); 
-          
-          // Show gender selection
-          setTimeout(() => {
-            qrScannerSection.style.display = 'none';
-            genderSelection.style.display = 'block';
-          }, 1000);
-        } else {
-          requestAnimationFrame(tick);
-        }
-      } else {
-        requestAnimationFrame(tick);
-      }
-    }
-
-    // Gender selection handlers
-    document.getElementById('rutinas-mujer').addEventListener('click', function() {
-      // Show women's routine options
-      showWomenRoutines();
-    });
-
-    document.getElementById('rutina-hombre').addEventListener('click', function() {
-      // Show men's routine options
-      showMenRoutines();
-    });
 
     function showWomenRoutines() {
       genderSelection.innerHTML = `
@@ -97,7 +34,7 @@
         <a class="boton" href="imagenes/intermedio mujer.pdf" target="_blank">Intermedio</a>
         <a class="boton" href="imagenes/avanzado mujer.pdf" target="_blank">Avanzado</a>
         <a class="boton" href="imagenes/mujer x 3 dias.pdf" target="_blank">3 Días por Semana</a>
-        <button class="boton" onclick="goBack()">Volver</button>
+        <button class="boton" onclick="showInitialOptions()">Volver</button>
       `;
     }
 
@@ -107,41 +44,12 @@
         <a class="boton" href="imagenes/rutina basica hombre.pdf" target="_blank">Básica</a>
         <a class="boton" href="imagenes/3 veces por semana hombre.pdf" target="_blank">3 Veces por Semana</a>
         <a class="boton" href="imagenes/avanzado hombre.pdf" target="_blank">Avanzado</a>
-        <button class="boton" onclick="goBack()">Volver</button>
+        <button class="boton" onclick="showInitialOptions()">Volver</button>
       `;
     }
 
-    function goBack() {
-      genderSelection.innerHTML = `
-        <h1>Elegí tu rutina</h1>
-        <a class="boton" id="rutinas-mujer">Rutinas Mujer</a>
-        <a class="boton" id="rutina-hombre">Rutina Hombre</a>
-      `;
-      
-      // Re-attach event listeners
-      document.getElementById('rutinas-mujer').addEventListener('click', showWomenRoutines);
-      document.getElementById('rutina-hombre').addEventListener('click', showMenRoutines);
-    }
-
-    // Function to simulate QR scan for testing
-    function simulateQRScan() {
-      qrStatus.textContent = 'QR escaneado exitosamente!';
-      // Stop camera if running
-      if (video.srcObject) {
-        const stream = video.srcObject;
-        const tracks = stream.getTracks();
-        tracks.forEach(track => track.stop());
-      }
-      
-      // Show gender selection
-      setTimeout(() => {
-        qrScannerSection.style.display = 'none';
-        genderSelection.style.display = 'block';
-      }, 1000);
-    }
-
-    // Start the camera when page loads
-    startCamera();
+    // Mostrar los botones iniciales al cargar la página
+    showInitialOptions();
   </script>
 
 </body>
