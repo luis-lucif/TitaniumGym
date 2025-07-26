@@ -5,7 +5,11 @@ html, body {
 }
 
 body {
-  background-color: #000; /* negro */
+  background-image: url('imagenes/logoTitanium.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: white;
   font-family: Arial, sans-serif;
   display: flex;
@@ -14,10 +18,63 @@ body {
   align-items: center;
   text-align: center;
   padding: 20px;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: -1;
 }
 
 h1 {
   margin-bottom: 40px;
+}
+
+/* QR Scanner Styles */
+#qr-scanner-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+#qr-reader {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px 0;
+  border: 3px solid #FFD700;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 20px #FFD700;
+}
+
+#video {
+  width: 100%;
+  height: auto;
+  display: block;
+  background-color: #333;
+}
+
+#qr-status {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #FFD700;
+  font-weight: bold;
+}
+
+/* Gender Selection Styles */
+#gender-selection {
+  width: 100%;
+  max-width: 500px;
 }
 
 .boton {
@@ -34,8 +91,9 @@ h1 {
   font-weight: bold;
   transition: all 0.2s ease;
   box-shadow: 0 0 10px #000; /* leve sombra */
+  border: none;
+  cursor: pointer;
 }
-
 
 .boton:hover {
   background-color: #ffdf00;
@@ -46,4 +104,26 @@ h1 {
   background-color: #fff27b; /* más brillante */
   box-shadow: 0 0 25px #FFD700;
   transform: scale(0.98);
+}
+
+/* Responsive design for mobile */
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+  
+  #qr-reader {
+    max-width: 90%;
+  }
+  
+  .boton {
+    width: 90%;
+    font-size: 16px;
+    padding: 12px 20px;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
 }
