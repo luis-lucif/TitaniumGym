@@ -8,7 +8,16 @@
 </head>
 <body>
 
-
+  <!-- QR Scanner Section -->
+  <div id="qr-scanner-section">
+    <h1>Escanea el código QR</h1>
+    <div id="qr-reader">
+      <video id="video" autoplay muted playsinline></video>
+      <canvas id="canvas" hidden></canvas>
+    </div>
+    <p id="qr-status">Apunta la cámara hacia el código QR</p>
+    <button class="boton" onclick="simulateQRScan()" style="margin-top: 20px;">Simular escaneo QR (para prueba)</button>
+  </div> 
 
   <!-- Gender Selection Section (initially hidden) -->
   <div id="gender-selection" style="display: none;">
@@ -18,9 +27,57 @@
   </div>
 
   <script>
-  const genderSelection = document.getElementById('gender-selection');
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const qrStatus = document.getElementById('qr-status');
+    const qrScannerSection = document.getElementById('qr-scanner-section');
+    const genderSelection = document.getElementById('gender-selection');
 
-    
+    Startcamera
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { facingMode: 'environment' } 
+        });
+        video.srcObject = stream;
+        video.play();
+        requestAnimationFrame(tick);
+      } catch (err) {
+        qrStatus.textContent = 'Error al acceder a la cámara: ' + err.message;
+      }
+    }
+
+    function tick() {
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.height = video.videoHeight;
+        canvas.width = video.videoWidth;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: "dontInvert",
+        });
+
+        if (code) {
+          qrStatus.textContent = 'QR escaneado exitosamente!';
+          // Stop camera
+          const stream = video.srcObject;
+          const tracks = stream.getTracks();
+          tracks.forEach(track => track.stop()); 
+          
+          // Show gender selection
+          setTimeout(() => {
+            qrScannerSection.style.display = 'none';
+            genderSelection.style.display = 'block';
+          }, 1000);
+        } else {
+          requestAnimationFrame(tick);
+        }
+      } else {
+        requestAnimationFrame(tick);
+      }
+    }
 
     // Gender selection handlers
     document.getElementById('rutinas-mujer').addEventListener('click', function() {
@@ -84,7 +141,7 @@
     }
 
     // Start the camera when page loads
-  
+    startCamera();
   </script>
 
 </body>
